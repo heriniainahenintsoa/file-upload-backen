@@ -23,9 +23,14 @@ class PostController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $posts = Post::latest()->get();
+        $posts = Post::latest()->with(['user', 'images'])->paginate(10);
+
         return response([
-            "posts" => $posts->load(["user", "images"]),
+            "posts" => $posts->items(),
+            "current_page" => $posts->currentPage(),
+            "last_page" => $posts->lastPage(),
+            "per_page" => $posts->perPage(),
+            "total" => $posts->total(),
         ]);
     }
 
